@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.env*
+!.env.example
+.data
+*.log
+tsconfig.tsbuildinfo
+/image.png
+/image2.png
