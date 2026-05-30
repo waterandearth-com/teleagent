@@ -533,6 +533,11 @@ export default function Home() {
         ) : (
           <form onSubmit={handleSubmit}>
             <Progress current={step} />
+            {currentStep !== "meal" && (
+              <button type="button" className="top-back-button" onClick={goBack}>
+                {t.flow.back}
+              </button>
+            )}
 
             {currentStep === "meal" && (
               <div className="welcome-panel panel-enter">
