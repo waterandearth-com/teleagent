@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>waterandearth Costs</title>
-  <meta name="description" content="A simple, visual house-building cost tracker for planned and paid costs.">
+  <title>Chi phí xây nhà waterandearth</title>
+  <meta name="description" content="Công cụ đơn giản để theo dõi chi phí xây nhà bằng VND.">
   <meta name="theme-color" content="#7fb7d9">
   <meta name="application-name" content="waterandearth">
   <link rel="manifest" href="manifest.json">
@@ -162,16 +162,6 @@
     .tiny-btn:hover,
     .icon-btn:hover {
       transform: translateY(-2px);
-    }
-
-    .language-select {
-      min-height: 46px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 0 14px;
-      color: var(--ink);
-      background: rgba(255, 255, 255, 0.9);
-      font-weight: 800;
     }
 
     .house-card {
@@ -648,7 +638,7 @@
 
     .admin-row {
       display: grid;
-      grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1fr) minmax(100px, 0.6fr);
+      grid-template-columns: 76px minmax(0, 1fr) minmax(100px, 0.6fr) auto;
       gap: 10px;
       align-items: end;
       padding: 12px;
@@ -686,6 +676,16 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-top: 14px;
+    }
+
+    .delete-category-btn {
+      min-height: 42px;
+      border: 1px solid rgba(223, 111, 111, 0.26);
+      border-radius: 14px;
+      padding: 0 12px;
+      color: #b84b4b;
+      background: rgba(255, 239, 239, 0.88);
+      font-weight: 900;
     }
 
     .hidden-input {
@@ -765,22 +765,12 @@
   <main class="app">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow" id="eyebrow">House costs only</p>
-        <h1 id="appTitle">Build cost tracker</h1>
-        <p class="subtitle" id="appSubtitle">Keep the whole house budget simple: planned costs, paid costs, and what is still left to pay.</p>
+        <p class="eyebrow" id="eyebrow">Chỉ theo dõi chi phí</p>
+        <h1 id="appTitle">Theo dõi chi phí xây nhà</h1>
+        <p class="subtitle" id="appSubtitle">Giữ ngân sách xây nhà thật đơn giản: chi phí dự kiến, chi phí đã trả và số tiền còn lại.</p>
         <div class="hero-actions">
-          <button class="primary-btn" id="addCostHero" type="button">+ <span id="addCostText">Add cost</span></button>
-          <button class="secondary-btn" id="adminBtn" type="button">⚙ <span id="adminText">Admin</span></button>
-          <select class="language-select" id="languageSelect" aria-label="Language">
-            <option value="en">English</option>
-            <option value="vi">Tiếng Việt</option>
-          </select>
-          <select class="language-select" id="currencySelect" aria-label="Currency">
-            <option value="USD">USD</option>
-            <option value="VND">VND</option>
-            <option value="ILS">ILS</option>
-            <option value="EUR">EUR</option>
-          </select>
+          <button class="primary-btn" id="addCostHero" type="button">+ <span id="addCostText">Thêm chi phí</span></button>
+          <button class="secondary-btn" id="adminBtn" type="button">⚙ <span id="adminText">Quản trị</span></button>
         </div>
       </div>
 
@@ -800,29 +790,29 @@
 
     <section class="summary-grid" aria-label="Cost summary">
       <article class="summary-card planned-card">
-        <span id="plannedLabel">Planned</span>
+        <span id="plannedLabel">Dự kiến</span>
         <strong id="plannedTotal">$0</strong>
-        <small id="plannedHint">Everything expected to cost money.</small>
+        <small id="plannedHint">Tất cả khoản dự kiến sẽ tốn tiền.</small>
       </article>
       <article class="summary-card paid-card">
-        <span id="paidLabel">Paid</span>
+        <span id="paidLabel">Đã trả</span>
         <strong id="paidTotal">$0</strong>
-        <small id="paidHint">Money already paid.</small>
+        <small id="paidHint">Số tiền đã thanh toán.</small>
       </article>
       <article class="summary-card left-card">
-        <span id="leftLabel">Left to pay</span>
+        <span id="leftLabel">Còn phải trả</span>
         <strong id="leftTotal">$0</strong>
-        <small id="leftHint">Planned minus paid.</small>
+        <small id="leftHint">Dự kiến trừ số đã trả.</small>
       </article>
     </section>
 
     <section>
       <div class="section-head">
         <div>
-          <h2 id="categoryTitle">Costs by part of the house</h2>
-          <p id="categorySubtitle">Tap a category to add a cost there.</p>
+          <h2 id="categoryTitle">Chi phí theo phần của ngôi nhà</h2>
+          <p id="categorySubtitle">Chạm vào hạng mục để thêm chi phí.</p>
         </div>
-        <button class="secondary-btn" id="addCostTop" type="button">+ <span id="addAnotherText">Add cost</span></button>
+        <button class="secondary-btn" id="addCostTop" type="button">+ <span id="addAnotherText">Thêm chi phí</span></button>
       </div>
       <div class="category-grid" id="categoryGrid"></div>
     </section>
@@ -830,27 +820,27 @@
     <section>
       <div class="section-head">
         <div>
-          <h2 id="listTitle">Cost list</h2>
-          <p id="listSubtitle">Simple receipts for everything planned or paid.</p>
+          <h2 id="listTitle">Danh sách chi phí</h2>
+          <p id="listSubtitle">Các khoản chi phí dự kiến hoặc đã trả.</p>
         </div>
       </div>
 
       <div class="cost-panel">
         <div class="cost-toolbar">
-          <input class="search-input" id="searchInput" placeholder="Search costs">
+          <input class="search-input" id="searchInput" placeholder="Tìm chi phí">
           <select class="filter-select" id="categoryFilter"></select>
           <select class="filter-select" id="statusFilter"></select>
         </div>
         <div class="cost-list" id="costList"></div>
-        <div class="empty-state" id="emptyState">No costs yet. Add the first one.</div>
+        <div class="empty-state" id="emptyState">Chưa có chi phí nào. Hãy thêm khoản đầu tiên.</div>
       </div>
 
       <div class="utility-row">
-        <span class="saved-state" id="savedState">Saved in this browser</span>
+        <span class="saved-state" id="savedState">Đã lưu trong trình duyệt này</span>
         <div class="utility-actions">
-          <button class="tiny-btn" id="exportBtn" type="button">⬇ <span id="exportText">Export Excel</span></button>
-          <button class="tiny-btn" id="backupBtn" type="button">💾 <span id="backupText">Backup</span></button>
-          <button class="tiny-btn" id="restoreBtn" type="button">↩ <span id="restoreText">Restore</span></button>
+          <button class="tiny-btn" id="exportBtn" type="button">⬇ <span id="exportText">Xuất Excel</span></button>
+          <button class="tiny-btn" id="backupBtn" type="button">💾 <span id="backupText">Sao lưu</span></button>
+          <button class="tiny-btn" id="restoreBtn" type="button">↩ <span id="restoreText">Khôi phục</span></button>
         </div>
       </div>
     </section>
@@ -859,42 +849,42 @@
   <div class="modal" id="costModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-card">
       <div class="modal-head">
-        <h2 id="modalTitle">Add cost</h2>
+        <h2 id="modalTitle">Thêm chi phí</h2>
         <button class="icon-btn" id="closeModal" type="button" aria-label="Close">×</button>
       </div>
       <form class="cost-form" id="costForm">
         <div class="form-grid">
           <label class="form-field full">
-            <span id="nameLabel">What is it?</span>
-            <input id="costName" required maxlength="80" placeholder="Concrete, windows, kitchen...">
+            <span id="nameLabel">Đó là chi phí gì?</span>
+            <input id="costName" required maxlength="80" placeholder="Bê tông, cửa sổ, bếp...">
           </label>
           <label class="form-field">
-            <span id="amountLabel">Amount</span>
+            <span id="amountLabel">Số tiền</span>
             <input id="costAmount" required type="number" min="0" step="0.01" placeholder="0">
           </label>
           <label class="form-field">
-            <span id="statusLabel">Status</span>
+            <span id="statusLabel">Trạng thái</span>
             <select id="costStatus">
-              <option value="planned">Planned</option>
-              <option value="paid">Paid</option>
+              <option value="planned">Dự kiến</option>
+              <option value="paid">Đã trả</option>
             </select>
           </label>
           <label class="form-field">
-            <span id="categoryLabel">Category</span>
+            <span id="categoryLabel">Hạng mục</span>
             <select id="costCategory"></select>
           </label>
           <label class="form-field">
-            <span id="dateLabel">Date</span>
+            <span id="dateLabel">Ngày</span>
             <input id="costDate" type="date">
           </label>
           <label class="form-field full">
-            <span id="noteLabel">Note</span>
-            <textarea id="costNote" maxlength="220" placeholder="Optional note"></textarea>
+            <span id="noteLabel">Ghi chú</span>
+            <textarea id="costNote" maxlength="220" placeholder="Ghi chú không bắt buộc"></textarea>
           </label>
         </div>
         <div class="modal-actions">
-          <button class="secondary-btn" id="cancelModal" type="button">Cancel</button>
-          <button class="primary-btn" type="submit" id="saveCostText">Save cost</button>
+          <button class="secondary-btn" id="cancelModal" type="button">Hủy</button>
+          <button class="primary-btn" type="submit" id="saveCostText">Lưu chi phí</button>
         </div>
       </form>
     </div>
@@ -903,14 +893,14 @@
   <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
     <div class="modal-card admin-card">
       <div class="modal-head">
-        <h2 id="adminTitle">Admin</h2>
+        <h2 id="adminTitle">Quản trị</h2>
         <button class="icon-btn" id="closeAdmin" type="button" aria-label="Close">×</button>
       </div>
-      <p class="admin-intro" id="adminIntro">Edit the basic category names and default planned values. Changes are saved in this browser.</p>
+      <p class="admin-intro" id="adminIntro">Sửa tên hạng mục cơ bản và giá trị dự kiến mặc định. Thay đổi được lưu trong trình duyệt này.</p>
       <div class="admin-list" id="adminList"></div>
       <div class="admin-actions">
-        <button class="secondary-btn" id="applyDefaultsBtn" type="button">Use these as current costs</button>
-        <button class="primary-btn" id="saveAdminBtn" type="button">Save admin values</button>
+        <button class="secondary-btn" id="applyDefaultsBtn" type="button">Dùng làm chi phí hiện tại</button>
+        <button class="primary-btn" id="saveAdminBtn" type="button">Lưu giá trị quản trị</button>
       </div>
     </div>
   </div>
@@ -939,72 +929,7 @@
       interior: 0,
       other: 50000
     };
-
     const labels = {
-      en: {
-        eyebrow: "House costs only",
-        appTitle: "Build cost tracker",
-        appSubtitle: "Keep the whole house budget simple: planned costs, paid costs, and what is still left to pay.",
-        addCostText: "Add cost",
-        addAnotherText: "Add cost",
-        adminText: "Admin",
-        adminTitle: "Admin",
-        adminIntro: "Edit the basic category names and default planned values. Changes are saved in this browser.",
-        adminEmoji: "Icon",
-        adminEnglish: "English name",
-        adminVietnamese: "Vietnamese name",
-        adminDefault: "Default value",
-        saveAdminBtn: "Save admin values",
-        applyDefaultsBtn: "Use these as current costs",
-        defaultsApplied: "Default costs applied",
-        plannedLabel: "Planned",
-        paidLabel: "Paid",
-        leftLabel: "Left to pay",
-        plannedHint: "Everything expected to cost money.",
-        paidHint: "Money already paid.",
-        leftHint: "Planned minus paid.",
-        categoryTitle: "Costs by part of the house",
-        categorySubtitle: "Tap a category to add a cost there.",
-        listTitle: "Cost list",
-        listSubtitle: "Simple receipts for everything planned or paid.",
-        searchPlaceholder: "Search costs",
-        allCategories: "All categories",
-        allStatuses: "All statuses",
-        statusPlanned: "Planned",
-        statusPaid: "Paid",
-        emptyState: "No costs yet. Add the first one.",
-        savedState: "Saved in this browser",
-        savedAt: "Saved",
-        exportText: "Export Excel",
-        backupText: "Backup",
-        restoreText: "Restore",
-        restored: "Backup restored",
-        modalTitleAdd: "Add cost",
-        modalTitleEdit: "Edit cost",
-        nameLabel: "What is it?",
-        namePlaceholder: "Concrete, windows, kitchen...",
-        amountLabel: "Amount",
-        statusLabel: "Status",
-        categoryLabel: "Category",
-        dateLabel: "Date",
-        noteLabel: "Note",
-        notePlaceholder: "Optional note",
-        cancelModal: "Cancel",
-        saveCostText: "Save cost",
-        paidOfPlanned: "paid of planned",
-        noNote: "No note",
-        categories: {
-          land: "Land",
-          foundation: "Foundation",
-          structure: "Structure",
-          roof: "Roof",
-          electricity: "Electricity",
-          plumbing: "Plumbing",
-          interior: "Interior",
-          other: "Other"
-        }
-      },
-      vi: {
         eyebrow: "Chỉ theo dõi chi phí",
         appTitle: "Theo dõi chi phí xây nhà",
         appSubtitle: "Giữ ngân sách xây nhà thật đơn giản: chi phí dự kiến, chi phí đã trả và số tiền còn lại.",
@@ -1014,9 +939,10 @@
         adminTitle: "Quản trị",
         adminIntro: "Sửa tên hạng mục cơ bản và giá trị dự kiến mặc định. Thay đổi được lưu trong trình duyệt này.",
         adminEmoji: "Biểu tượng",
-        adminEnglish: "Tên tiếng Anh",
         adminVietnamese: "Tên tiếng Việt",
         adminDefault: "Giá trị mặc định",
+        deleteCategory: "Xóa",
+        deleteCategoryConfirm: "Xóa hạng mục này và tất cả chi phí của nó?",
         saveAdminBtn: "Lưu giá trị quản trị",
         applyDefaultsBtn: "Dùng làm chi phí hiện tại",
         defaultsApplied: "Đã áp dụng chi phí mặc định",
@@ -1073,16 +999,17 @@
     const oldStorageKey = "house-build-budget-v1";
 
     const sampleCosts = [
-      cost("foundation", "Concrete foundation", 52000, "planned", ""),
-      cost("structure", "Lumber and framing labor", 88000, "planned", ""),
-      cost("other", "Construction reserve", 50000, "planned", "Keep extra for surprises")
+      cost("foundation", "Móng bê tông", 52000, "planned", ""),
+      cost("structure", "Khung nhà và nhân công", 88000, "planned", ""),
+      cost("other", "Dự phòng xây dựng", 50000, "planned", "Giữ thêm cho chi phí phát sinh")
     ];
 
     const state = {
-      language: "en",
-      currency: "USD",
+      language: "vi",
+      currency: "VND",
       costs: sampleCosts,
       categorySettings: defaultCategorySettings(),
+      deletedCategories: [],
       editingId: null,
       filters: {
         search: "",
@@ -1092,8 +1019,6 @@
     };
 
     const els = {
-      languageSelect: document.querySelector("#languageSelect"),
-      currencySelect: document.querySelector("#currencySelect"),
       addCostHero: document.querySelector("#addCostHero"),
       addCostTop: document.querySelector("#addCostTop"),
       adminBtn: document.querySelector("#adminBtn"),
@@ -1148,23 +1073,26 @@
         ...settings,
         [category.id]: {
           emoji: category.emoji,
-          en: labels.en.categories[category.id],
-          vi: labels.vi.categories[category.id],
+          vi: labels.categories[category.id],
           defaultAmount: defaultCategoryValues[category.id] || 0
         }
       }), {});
     }
 
     function tr(key) {
-      return labels[state.language][key] || labels.en[key] || key;
+      return labels[key] || key;
     }
 
     function categoryName(id) {
-      return state.categorySettings[id]?.[state.language] || labels[state.language].categories[id] || labels.en.categories[id] || id;
+      return state.categorySettings[id]?.vi || labels.categories[id] || id;
     }
 
     function categoryEmoji(id) {
       return state.categorySettings[id]?.emoji || categories.find(category => category.id === id)?.emoji || "📦";
+    }
+
+    function activeCategories() {
+      return categories.filter(category => !state.deletedCategories.includes(category.id));
     }
 
     function statusName(status) {
@@ -1177,10 +1105,10 @@
     }
 
     function money(value) {
-      return new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", {
+      return new Intl.NumberFormat("vi-VN", {
         style: "currency",
-        currency: state.currency,
-        maximumFractionDigits: state.currency === "VND" ? 0 : 2
+        currency: "VND",
+        maximumFractionDigits: 0
       }).format(numberValue(value));
     }
 
@@ -1194,10 +1122,10 @@
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          state.language = parsed.language === "vi" ? "vi" : "en";
-          state.currency = parsed.currency || "USD";
           state.costs = Array.isArray(parsed.costs) && parsed.costs.length ? parsed.costs : sampleCosts;
           state.categorySettings = normalizeCategorySettings(parsed.categorySettings);
+          state.deletedCategories = Array.isArray(parsed.deletedCategories) ? parsed.deletedCategories.filter(id => categories.some(category => category.id === id)) : [];
+          state.costs = state.costs.filter(item => !state.deletedCategories.includes(item.category));
           return;
         } catch (error) {
           console.warn("Could not load saved costs", error);
@@ -1209,13 +1137,11 @@
 
       try {
         const parsed = JSON.parse(oldSaved);
-        if (parsed.language === "vi") state.language = "vi";
-        if (parsed.currency) state.currency = parsed.currency;
         if (Array.isArray(parsed.rows) && parsed.rows.length) {
           state.costs = parsed.rows.map(item => ({
             id: item.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())),
             category: mapOldCategory(item.category),
-            name: item.item || "Cost",
+            name: item.item || "Chi phí",
             amount: numberValue(item.actual) || numberValue(item.estimate),
             status: item.status === "Paid" ? "paid" : "planned",
             date: new Date().toISOString().slice(0, 10),
@@ -1238,7 +1164,6 @@
           ...settings,
           [category.id]: {
             emoji: String(incoming.emoji || defaults[category.id].emoji).replace(/[<>]/g, "").trim().slice(0, 8),
-            en: String(incoming.en || defaults[category.id].en).replace(/[<>]/g, "").trim().slice(0, 48),
             vi: String(incoming.vi || defaults[category.id].vi).replace(/[<>]/g, "").trim().slice(0, 48),
             defaultAmount: numberValue(incoming.defaultAmount)
           }
@@ -1279,7 +1204,7 @@
     }
 
     function applyLanguage() {
-      document.documentElement.lang = state.language;
+      document.documentElement.lang = "vi";
       document.title = tr("appTitle");
       [
         "eyebrow",
@@ -1323,8 +1248,6 @@
       els.costNote.placeholder = tr("notePlaceholder");
       els.emptyState.textContent = tr("emptyState");
       els.savedState.textContent = tr("savedState");
-      els.languageSelect.value = state.language;
-      els.currencySelect.value = state.currency;
       renderFilters();
       renderFormOptions();
     }
@@ -1332,18 +1255,18 @@
     function renderFilters() {
       const selectedCategory = state.filters.category;
       const selectedStatus = state.filters.status;
-      els.categoryFilter.innerHTML = `<option value="all">${escapeHtml(tr("allCategories"))}</option>${categories.map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("")}`;
+      els.categoryFilter.innerHTML = `<option value="all">${escapeHtml(tr("allCategories"))}</option>${activeCategories().map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("")}`;
       els.statusFilter.innerHTML = `
         <option value="all">${escapeHtml(tr("allStatuses"))}</option>
         <option value="planned">${escapeHtml(tr("statusPlanned"))}</option>
         <option value="paid">${escapeHtml(tr("statusPaid"))}</option>
       `;
-      els.categoryFilter.value = selectedCategory;
+      els.categoryFilter.value = activeCategories().some(category => category.id === selectedCategory) ? selectedCategory : "all";
       els.statusFilter.value = selectedStatus;
     }
 
     function renderFormOptions() {
-      els.costCategory.innerHTML = categories.map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("");
+      els.costCategory.innerHTML = activeCategories().map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("");
       els.costStatus.innerHTML = `
         <option value="planned">${escapeHtml(tr("statusPlanned"))}</option>
         <option value="paid">${escapeHtml(tr("statusPaid"))}</option>
@@ -1358,7 +1281,7 @@
     }
 
     function renderCategories() {
-      els.categoryGrid.innerHTML = categories.map(category => {
+      els.categoryGrid.innerHTML = activeCategories().map(category => {
         const total = categoryTotals(category.id);
         const percent = total.planned ? Math.min(100, total.paid / total.planned * 100) : 0;
         return `
@@ -1416,7 +1339,7 @@
     }
 
     function renderAdmin() {
-      els.adminList.innerHTML = categories.map(category => {
+      els.adminList.innerHTML = activeCategories().map(category => {
         const settings = state.categorySettings[category.id] || defaultCategorySettings()[category.id];
 
         return `
@@ -1426,10 +1349,6 @@
               <input data-admin-field="emoji" value="${escapeAttr(settings.emoji)}" maxlength="8">
             </label>
             <label>
-              <span>${escapeHtml(tr("adminEnglish"))}</span>
-              <input data-admin-field="en" value="${escapeAttr(settings.en)}" maxlength="48">
-            </label>
-            <label>
               <span>${escapeHtml(tr("adminVietnamese"))}</span>
               <input data-admin-field="vi" value="${escapeAttr(settings.vi)}" maxlength="48">
             </label>
@@ -1437,6 +1356,7 @@
               <span>${escapeHtml(tr("adminDefault"))}</span>
               <input data-admin-field="defaultAmount" type="number" min="0" step="0.01" value="${numberValue(settings.defaultAmount)}">
             </label>
+            <button class="delete-category-btn" type="button" data-delete-category="${category.id}">${escapeHtml(tr("deleteCategory"))}</button>
           </div>
         `;
       }).join("");
@@ -1463,7 +1383,6 @@
 
         nextSettings[id] = {
           emoji: String(values.emoji || nextSettings[id].emoji).replace(/[<>]/g, "").trim().slice(0, 8),
-          en: String(values.en || nextSettings[id].en).replace(/[<>]/g, "").trim().slice(0, 48),
           vi: String(values.vi || nextSettings[id].vi).replace(/[<>]/g, "").trim().slice(0, 48),
           defaultAmount: numberValue(values.defaultAmount)
         };
@@ -1476,13 +1395,13 @@
 
     function applyDefaultCosts() {
       saveAdminValues();
-      state.costs = categories
+      state.costs = activeCategories()
         .map(category => {
           const settings = state.categorySettings[category.id];
           return {
             id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
             category: category.id,
-            name: settings.en,
+            name: settings.vi,
             amount: numberValue(settings.defaultAmount),
             status: "planned",
             date: new Date().toISOString().slice(0, 10),
@@ -1503,6 +1422,9 @@
       els.costAmount.value = item ? numberValue(item.amount) : "";
       els.costStatus.value = item?.status || "planned";
       els.costCategory.value = item?.category || categoryId || "other";
+      if (!activeCategories().some(category => category.id === els.costCategory.value)) {
+        els.costCategory.value = activeCategories()[0]?.id || "other";
+      }
       els.costDate.value = item?.date || new Date().toISOString().slice(0, 10);
       els.costNote.value = item?.note || "";
       els.modal.classList.add("open");
@@ -1573,7 +1495,6 @@
               <tr><th>${excelCell(tr("plannedLabel"))}</th><td class="number">${total.planned}</td></tr>
               <tr><th>${excelCell(tr("paidLabel"))}</th><td class="number">${total.paid}</td></tr>
               <tr><th>${excelCell(tr("leftLabel"))}</th><td class="number">${total.left}</td></tr>
-              <tr><th>Currency</th><td>${excelCell(state.currency)}</td></tr>
             </table>
             <h2>${excelCell(tr("listTitle"))}</h2>
             <table>
@@ -1613,18 +1534,17 @@
         try {
           const parsed = JSON.parse(String(reader.result || "{}"));
           if (!Array.isArray(parsed.costs)) return;
-          state.language = parsed.language === "vi" ? "vi" : "en";
-          state.currency = parsed.currency || "USD";
           state.categorySettings = normalizeCategorySettings(parsed.categorySettings);
+          state.deletedCategories = Array.isArray(parsed.deletedCategories) ? parsed.deletedCategories.filter(id => categories.some(category => category.id === id)) : [];
           state.costs = parsed.costs.map(item => ({
             id: item.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())),
             category: categories.some(category => category.id === item.category) ? item.category : "other",
-            name: item.name || "Cost",
+            name: item.name || "Chi phí",
             amount: numberValue(item.amount),
             status: item.status === "paid" ? "paid" : "planned",
             date: item.date || new Date().toISOString().slice(0, 10),
             note: item.note || ""
-          }));
+          })).filter(item => !state.deletedCategories.includes(item.category));
           render();
           save();
           els.savedState.textContent = tr("restored");
@@ -1663,6 +1583,19 @@
       closeAdminModal();
     });
     els.applyDefaultsBtn.addEventListener("click", applyDefaultCosts);
+    els.adminList.addEventListener("click", event => {
+      const button = event.target.closest("[data-delete-category]");
+      if (!button) return;
+
+      if (!confirm(tr("deleteCategoryConfirm"))) return;
+
+      const id = button.dataset.deleteCategory;
+      state.deletedCategories = Array.from(new Set([...state.deletedCategories, id]));
+      state.costs = state.costs.filter(item => item.category !== id);
+      if (state.filters.category === id) state.filters.category = "all";
+      render();
+      save();
+    });
     els.closeModal.addEventListener("click", closeModal);
     els.cancelModal.addEventListener("click", closeModal);
     els.costForm.addEventListener("submit", handleSubmit);
@@ -1673,18 +1606,6 @@
       const file = event.target.files[0];
       if (file) restoreBackup(file);
       event.target.value = "";
-    });
-
-    els.languageSelect.addEventListener("change", () => {
-      state.language = els.languageSelect.value === "vi" ? "vi" : "en";
-      render();
-      save();
-    });
-
-    els.currencySelect.addEventListener("change", () => {
-      state.currency = els.currencySelect.value;
-      render();
-      save();
     });
 
     els.searchInput.addEventListener("input", () => {
