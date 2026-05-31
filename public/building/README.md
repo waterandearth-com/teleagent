@@ -1,15 +1,16 @@
 # waterandearth
 
-Static house-build budget app.
+Static house-build cost app.
 
 ## Features
 
-- Editable construction budget table
+- Simple visual cost cards
+- Planned, paid, and left-to-pay totals
+- Category cards for each part of the house
+- Quick add/edit cost modal
 - Local browser save
 - JSON backup and restore
 - Excel `.xls` export
-- CSV import
-- Budget summary and charts
 - English and Vietnamese interface
 - PWA manifest and service worker for install/offline support
 
