@@ -1,4 +1,4 @@
-const CACHE_NAME = "waterandearth-costs-v2";
+const CACHE_NAME = "waterandearth-costs-v3";
 const APP_ASSETS = [
   "./",
   "./index.html",

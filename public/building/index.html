@@ -588,6 +588,10 @@
       padding: 18px;
     }
 
+    .admin-card {
+      width: min(100%, 920px);
+    }
+
     .modal-head {
       display: flex;
       align-items: center;
@@ -629,6 +633,59 @@
       grid-template-columns: 1fr 1.2fr;
       gap: 10px;
       margin-top: 6px;
+    }
+
+    .admin-intro {
+      margin: -4px 0 16px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .admin-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-row {
+      display: grid;
+      grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1fr) minmax(100px, 0.6fr);
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .admin-row label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .admin-row input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0 10px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.94);
+      outline: none;
+    }
+
+    .admin-row input:focus {
+      border-color: rgba(63, 145, 191, 0.72);
+      box-shadow: 0 0 0 4px rgba(103, 174, 218, 0.16);
+    }
+
+    .admin-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .hidden-input {
@@ -696,6 +753,11 @@
       .modal-actions {
         grid-template-columns: 1fr;
       }
+
+      .admin-row,
+      .admin-actions {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -708,6 +770,7 @@
         <p class="subtitle" id="appSubtitle">Keep the whole house budget simple: planned costs, paid costs, and what is still left to pay.</p>
         <div class="hero-actions">
           <button class="primary-btn" id="addCostHero" type="button">+ <span id="addCostText">Add cost</span></button>
+          <button class="secondary-btn" id="adminBtn" type="button">⚙ <span id="adminText">Admin</span></button>
           <select class="language-select" id="languageSelect" aria-label="Language">
             <option value="en">English</option>
             <option value="vi">Tiếng Việt</option>
@@ -837,6 +900,21 @@
     </div>
   </div>
 
+  <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal-card admin-card">
+      <div class="modal-head">
+        <h2 id="adminTitle">Admin</h2>
+        <button class="icon-btn" id="closeAdmin" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="admin-intro" id="adminIntro">Edit the basic category names and default planned values. Changes are saved in this browser.</p>
+      <div class="admin-list" id="adminList"></div>
+      <div class="admin-actions">
+        <button class="secondary-btn" id="applyDefaultsBtn" type="button">Use these as current costs</button>
+        <button class="primary-btn" id="saveAdminBtn" type="button">Save admin values</button>
+      </div>
+    </div>
+  </div>
+
   <input class="hidden-input" id="restoreInput" type="file" accept="application/json">
 
   <script>
@@ -851,6 +929,17 @@
       { id: "other", emoji: "📦", color: "#edf0f2" }
     ];
 
+    const defaultCategoryValues = {
+      land: 0,
+      foundation: 52000,
+      structure: 88000,
+      roof: 0,
+      electricity: 0,
+      plumbing: 0,
+      interior: 0,
+      other: 50000
+    };
+
     const labels = {
       en: {
         eyebrow: "House costs only",
@@ -858,6 +947,16 @@
         appSubtitle: "Keep the whole house budget simple: planned costs, paid costs, and what is still left to pay.",
         addCostText: "Add cost",
         addAnotherText: "Add cost",
+        adminText: "Admin",
+        adminTitle: "Admin",
+        adminIntro: "Edit the basic category names and default planned values. Changes are saved in this browser.",
+        adminEmoji: "Icon",
+        adminEnglish: "English name",
+        adminVietnamese: "Vietnamese name",
+        adminDefault: "Default value",
+        saveAdminBtn: "Save admin values",
+        applyDefaultsBtn: "Use these as current costs",
+        defaultsApplied: "Default costs applied",
         plannedLabel: "Planned",
         paidLabel: "Paid",
         leftLabel: "Left to pay",
@@ -911,6 +1010,16 @@
         appSubtitle: "Giữ ngân sách xây nhà thật đơn giản: chi phí dự kiến, chi phí đã trả và số tiền còn lại.",
         addCostText: "Thêm chi phí",
         addAnotherText: "Thêm chi phí",
+        adminText: "Quản trị",
+        adminTitle: "Quản trị",
+        adminIntro: "Sửa tên hạng mục cơ bản và giá trị dự kiến mặc định. Thay đổi được lưu trong trình duyệt này.",
+        adminEmoji: "Biểu tượng",
+        adminEnglish: "Tên tiếng Anh",
+        adminVietnamese: "Tên tiếng Việt",
+        adminDefault: "Giá trị mặc định",
+        saveAdminBtn: "Lưu giá trị quản trị",
+        applyDefaultsBtn: "Dùng làm chi phí hiện tại",
+        defaultsApplied: "Đã áp dụng chi phí mặc định",
         plannedLabel: "Dự kiến",
         paidLabel: "Đã trả",
         leftLabel: "Còn phải trả",
@@ -973,6 +1082,7 @@
       language: "en",
       currency: "USD",
       costs: sampleCosts,
+      categorySettings: defaultCategorySettings(),
       editingId: null,
       filters: {
         search: "",
@@ -986,6 +1096,14 @@
       currencySelect: document.querySelector("#currencySelect"),
       addCostHero: document.querySelector("#addCostHero"),
       addCostTop: document.querySelector("#addCostTop"),
+      adminBtn: document.querySelector("#adminBtn"),
+      adminModal: document.querySelector("#adminModal"),
+      adminTitle: document.querySelector("#adminTitle"),
+      adminIntro: document.querySelector("#adminIntro"),
+      closeAdmin: document.querySelector("#closeAdmin"),
+      adminList: document.querySelector("#adminList"),
+      saveAdminBtn: document.querySelector("#saveAdminBtn"),
+      applyDefaultsBtn: document.querySelector("#applyDefaultsBtn"),
       categoryGrid: document.querySelector("#categoryGrid"),
       costList: document.querySelector("#costList"),
       emptyState: document.querySelector("#emptyState"),
@@ -1025,12 +1143,28 @@
       };
     }
 
+    function defaultCategorySettings() {
+      return categories.reduce((settings, category) => ({
+        ...settings,
+        [category.id]: {
+          emoji: category.emoji,
+          en: labels.en.categories[category.id],
+          vi: labels.vi.categories[category.id],
+          defaultAmount: defaultCategoryValues[category.id] || 0
+        }
+      }), {});
+    }
+
     function tr(key) {
       return labels[state.language][key] || labels.en[key] || key;
     }
 
     function categoryName(id) {
-      return labels[state.language].categories[id] || labels.en.categories[id] || id;
+      return state.categorySettings[id]?.[state.language] || labels[state.language].categories[id] || labels.en.categories[id] || id;
+    }
+
+    function categoryEmoji(id) {
+      return state.categorySettings[id]?.emoji || categories.find(category => category.id === id)?.emoji || "📦";
     }
 
     function statusName(status) {
@@ -1063,6 +1197,7 @@
           state.language = parsed.language === "vi" ? "vi" : "en";
           state.currency = parsed.currency || "USD";
           state.costs = Array.isArray(parsed.costs) && parsed.costs.length ? parsed.costs : sampleCosts;
+          state.categorySettings = normalizeCategorySettings(parsed.categorySettings);
           return;
         } catch (error) {
           console.warn("Could not load saved costs", error);
@@ -1090,6 +1225,25 @@
       } catch (error) {
         console.warn("Could not migrate old budget", error);
       }
+    }
+
+    function normalizeCategorySettings(input) {
+      const defaults = defaultCategorySettings();
+      const value = input && typeof input === "object" ? input : {};
+
+      return categories.reduce((settings, category) => {
+        const incoming = value[category.id] && typeof value[category.id] === "object" ? value[category.id] : {};
+
+        return {
+          ...settings,
+          [category.id]: {
+            emoji: String(incoming.emoji || defaults[category.id].emoji).replace(/[<>]/g, "").trim().slice(0, 8),
+            en: String(incoming.en || defaults[category.id].en).replace(/[<>]/g, "").trim().slice(0, 48),
+            vi: String(incoming.vi || defaults[category.id].vi).replace(/[<>]/g, "").trim().slice(0, 48),
+            defaultAmount: numberValue(incoming.defaultAmount)
+          }
+        };
+      }, {});
     }
 
     function mapOldCategory(category) {
@@ -1133,6 +1287,11 @@
         "appSubtitle",
         "addCostText",
         "addAnotherText",
+        "adminText",
+        "adminTitle",
+        "adminIntro",
+        "saveAdminBtn",
+        "applyDefaultsBtn",
         "plannedLabel",
         "paidLabel",
         "leftLabel",
@@ -1173,7 +1332,7 @@
     function renderFilters() {
       const selectedCategory = state.filters.category;
       const selectedStatus = state.filters.status;
-      els.categoryFilter.innerHTML = `<option value="all">${escapeHtml(tr("allCategories"))}</option>${categories.map(category => `<option value="${category.id}">${escapeHtml(category.emoji)} ${escapeHtml(categoryName(category.id))}</option>`).join("")}`;
+      els.categoryFilter.innerHTML = `<option value="all">${escapeHtml(tr("allCategories"))}</option>${categories.map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("")}`;
       els.statusFilter.innerHTML = `
         <option value="all">${escapeHtml(tr("allStatuses"))}</option>
         <option value="planned">${escapeHtml(tr("statusPlanned"))}</option>
@@ -1184,7 +1343,7 @@
     }
 
     function renderFormOptions() {
-      els.costCategory.innerHTML = categories.map(category => `<option value="${category.id}">${escapeHtml(category.emoji)} ${escapeHtml(categoryName(category.id))}</option>`).join("");
+      els.costCategory.innerHTML = categories.map(category => `<option value="${category.id}">${escapeHtml(categoryEmoji(category.id))} ${escapeHtml(categoryName(category.id))}</option>`).join("");
       els.costStatus.innerHTML = `
         <option value="planned">${escapeHtml(tr("statusPlanned"))}</option>
         <option value="paid">${escapeHtml(tr("statusPaid"))}</option>
@@ -1205,7 +1364,7 @@
         return `
           <button class="category-card" type="button" data-add-category="${category.id}" style="background: linear-gradient(135deg, rgba(255,255,255,0.94), ${category.color});">
             <div class="category-top">
-              <span class="category-emoji" aria-hidden="true">${escapeHtml(category.emoji)}</span>
+              <span class="category-emoji" aria-hidden="true">${escapeHtml(categoryEmoji(category.id))}</span>
               <small>${total.count}</small>
             </div>
             <h3>${escapeHtml(categoryName(category.id))}</h3>
@@ -1231,10 +1390,9 @@
       const items = filteredCosts().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
       els.emptyState.style.display = items.length ? "none" : "block";
       els.costList.innerHTML = items.map(item => {
-        const category = categories.find(entry => entry.id === item.category) || categories[categories.length - 1];
         return `
           <article class="cost-item" data-id="${escapeAttr(item.id)}">
-            <span class="cost-icon" aria-hidden="true">${escapeHtml(category.emoji)}</span>
+            <span class="cost-icon" aria-hidden="true">${escapeHtml(categoryEmoji(item.category))}</span>
             <div class="cost-main">
               <strong>${escapeHtml(item.name)}</strong>
               <span>${escapeHtml(categoryName(item.category))} · ${escapeHtml(item.date || "")} · ${escapeHtml(item.note || tr("noNote"))}</span>
@@ -1254,6 +1412,88 @@
       renderSummary();
       renderCategories();
       renderCosts();
+      renderAdmin();
+    }
+
+    function renderAdmin() {
+      els.adminList.innerHTML = categories.map(category => {
+        const settings = state.categorySettings[category.id] || defaultCategorySettings()[category.id];
+
+        return `
+          <div class="admin-row" data-category-admin="${category.id}">
+            <label>
+              <span>${escapeHtml(tr("adminEmoji"))}</span>
+              <input data-admin-field="emoji" value="${escapeAttr(settings.emoji)}" maxlength="8">
+            </label>
+            <label>
+              <span>${escapeHtml(tr("adminEnglish"))}</span>
+              <input data-admin-field="en" value="${escapeAttr(settings.en)}" maxlength="48">
+            </label>
+            <label>
+              <span>${escapeHtml(tr("adminVietnamese"))}</span>
+              <input data-admin-field="vi" value="${escapeAttr(settings.vi)}" maxlength="48">
+            </label>
+            <label>
+              <span>${escapeHtml(tr("adminDefault"))}</span>
+              <input data-admin-field="defaultAmount" type="number" min="0" step="0.01" value="${numberValue(settings.defaultAmount)}">
+            </label>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openAdmin() {
+      renderAdmin();
+      els.adminModal.classList.add("open");
+    }
+
+    function closeAdminModal() {
+      els.adminModal.classList.remove("open");
+    }
+
+    function saveAdminValues() {
+      const nextSettings = normalizeCategorySettings(state.categorySettings);
+
+      els.adminList.querySelectorAll("[data-category-admin]").forEach(row => {
+        const id = row.dataset.categoryAdmin;
+        const values = {};
+        row.querySelectorAll("[data-admin-field]").forEach(input => {
+          values[input.dataset.adminField] = input.value;
+        });
+
+        nextSettings[id] = {
+          emoji: String(values.emoji || nextSettings[id].emoji).replace(/[<>]/g, "").trim().slice(0, 8),
+          en: String(values.en || nextSettings[id].en).replace(/[<>]/g, "").trim().slice(0, 48),
+          vi: String(values.vi || nextSettings[id].vi).replace(/[<>]/g, "").trim().slice(0, 48),
+          defaultAmount: numberValue(values.defaultAmount)
+        };
+      });
+
+      state.categorySettings = normalizeCategorySettings(nextSettings);
+      render();
+      save();
+    }
+
+    function applyDefaultCosts() {
+      saveAdminValues();
+      state.costs = categories
+        .map(category => {
+          const settings = state.categorySettings[category.id];
+          return {
+            id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+            category: category.id,
+            name: settings.en,
+            amount: numberValue(settings.defaultAmount),
+            status: "planned",
+            date: new Date().toISOString().slice(0, 10),
+            note: ""
+          };
+        })
+        .filter(item => item.amount > 0);
+      closeAdminModal();
+      render();
+      save();
+      els.savedState.textContent = tr("defaultsApplied");
     }
 
     function openModal(categoryId, item) {
@@ -1375,6 +1615,7 @@
           if (!Array.isArray(parsed.costs)) return;
           state.language = parsed.language === "vi" ? "vi" : "en";
           state.currency = parsed.currency || "USD";
+          state.categorySettings = normalizeCategorySettings(parsed.categorySettings);
           state.costs = parsed.costs.map(item => ({
             id: item.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())),
             category: categories.some(category => category.id === item.category) ? item.category : "other",
@@ -1415,6 +1656,13 @@
 
     els.addCostHero.addEventListener("click", () => openModal("other"));
     els.addCostTop.addEventListener("click", () => openModal("other"));
+    els.adminBtn.addEventListener("click", openAdmin);
+    els.closeAdmin.addEventListener("click", closeAdminModal);
+    els.saveAdminBtn.addEventListener("click", () => {
+      saveAdminValues();
+      closeAdminModal();
+    });
+    els.applyDefaultsBtn.addEventListener("click", applyDefaultCosts);
     els.closeModal.addEventListener("click", closeModal);
     els.cancelModal.addEventListener("click", closeModal);
     els.costForm.addEventListener("submit", handleSubmit);
@@ -1479,8 +1727,13 @@
       if (event.target === els.modal) closeModal();
     });
 
+    els.adminModal.addEventListener("click", event => {
+      if (event.target === els.adminModal) closeAdminModal();
+    });
+
     window.addEventListener("keydown", event => {
       if (event.key === "Escape" && els.modal.classList.contains("open")) closeModal();
+      if (event.key === "Escape" && els.adminModal.classList.contains("open")) closeAdminModal();
     });
 
     load();
