@@ -65,3 +65,8 @@ The local/server file storage approach is fine for local development and a persi
 2. Import it in Vercel.
 3. Add `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, and `ADMIN_PASSWORD` in Vercel project settings.
 4. Deploy.
+
+## waterandearth
+
+The standalone house-build budget app lives in `public/waterandearth`.
+After deploying to Vercel, open it at `/waterandearth`.
