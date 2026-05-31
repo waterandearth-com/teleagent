@@ -70,3 +70,12 @@ The local/server file storage approach is fine for local development and a persi
 
 The standalone house-build budget app lives in `public/building`.
 After deploying to Vercel, open it at `/building`.
+
+For shared live updates across devices, configure Upstash/Vercel KV env vars:
+
+```bash
+KV_REST_API_URL=
+KV_REST_API_TOKEN=
+```
+
+The app also accepts `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.

@@ -1,8 +1,9 @@
-const CACHE_NAME = "waterandearth-costs-v4";
+const CACHE_NAME = "waterandearth-costs-v5";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
+  "./background.jpg",
   "./assets/icon.svg"
 ];
 
