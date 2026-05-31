@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="waterandearth">
+  <rect width="512" height="512" rx="108" fill="#f6f7f4"/>
+  <path d="M94 318c52 61 116 91 193 91 58 0 103-13 136-39-30 5-60 4-91-2-54-11-102-37-145-79-28-27-59-43-93-49v78z" fill="#8b6f47"/>
+  <path d="M88 234c46-52 92-78 138-78 42 0 78 20 109 59 28 36 58 54 89 54v-74c-40 0-75-17-106-50-35-36-74-54-118-54-47 0-84 14-112 42v101z" fill="#1f7a5f"/>
+  <path d="M121 255c33-35 67-53 102-53 31 0 59 16 84 48 33 42 72 64 117 64v35c-52 0-98-22-137-67-26-30-53-45-81-45-29 0-57 14-85 42v-24z" fill="#476b9b"/>
+  <path d="M156 350h210" stroke="#1d2522" stroke-width="24" stroke-linecap="round"/>
+  <path d="M196 302h126v48H196z" fill="#1d2522"/>
+  <path d="M177 302l82-74 84 74" fill="none" stroke="#1d2522" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
