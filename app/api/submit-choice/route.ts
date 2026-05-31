@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
-import { defaultLanguage, isLanguage, type Language, type Option, type OptionGroup } from "@/lib/i18n";
+import {
+  defaultLanguage,
+  freeRequestOptions,
+  isLanguage,
+  type Language,
+  type Option,
+  type OptionGroup
+} from "@/lib/i18n";
 import { readFormConfig } from "@/lib/form-config";
-import { sendTelegramNotification } from "@/lib/telegram";
+import { sendTelegramFreeRequest, sendTelegramNotification } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
 const maxTextLength = 300;
 
 type SubmitPayload = {
+  requestType?: unknown;
   language?: unknown;
+  freeRequestIds?: unknown;
+  customRequest?: unknown;
   meal?: unknown;
   selectedFood?: unknown;
   customFood?: unknown;
@@ -27,6 +37,14 @@ function sanitize(value: unknown) {
   }
 
   return value.replace(/[<>]/g, "").trim().slice(0, maxTextLength);
+}
+
+function sanitizeStringArray(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.map(sanitize).filter(Boolean).slice(0, 8);
 }
 
 function invalid() {
@@ -101,6 +119,36 @@ export async function POST(request: Request) {
   }
 
   const language: Language = isLanguage(payload.language) ? payload.language : defaultLanguage;
+  const requestType = sanitize(payload.requestType);
+  const freeRequestIds = sanitizeStringArray(payload.freeRequestIds);
+  const customRequest = sanitize(payload.customRequest);
+
+  if (requestType === "free") {
+    const selectedRequests = freeRequestOptions.filter((option) => freeRequestIds.includes(option.id));
+
+    if (selectedRequests.length === 0) {
+      return invalid();
+    }
+
+    if (freeRequestIds.includes("custom") && !customRequest) {
+      return invalid();
+    }
+
+    try {
+      await sendTelegramFreeRequest({
+        createdAt: new Date().toISOString(),
+        language: "en",
+        requestLabels: selectedRequests.map((option) => option.labels.en),
+        customRequest: customRequest || undefined
+      });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ success: false }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  }
+
   const meal = sanitize(payload.meal);
   const selectedFood = sanitize(payload.selectedFood);
   const customFood = sanitize(payload.customFood);

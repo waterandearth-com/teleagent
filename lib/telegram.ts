@@ -14,6 +14,13 @@ export type TelegramSubmission = {
   note?: string;
 };
 
+export type FreeRequestSubmission = {
+  createdAt: string;
+  language: Language;
+  requestLabels: string[];
+  customRequest?: string;
+};
+
 function formatChoice(submission: TelegramSubmission) {
   if (submission.selectedFood === "other" && submission.customFood) {
     return `${submission.selectedFoodLabel} - ${submission.customFood}`;
@@ -119,4 +126,44 @@ export async function sendTelegramNotification(submission: TelegramSubmission, v
   }
 
   await sendVoiceFile(token, chatId, voice, fileName);
+}
+
+export async function sendTelegramFreeRequest(submission: FreeRequestSubmission) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) {
+    throw new Error("Telegram credentials are missing");
+  }
+
+  const language: Language = submission.language;
+  const t = translations[language].notification;
+  const text = [
+    t.freeRequestTitle,
+    "",
+    t.requests,
+    submission.requestLabels.map((label) => `- ${label}`).join("\n"),
+    "",
+    t.customRequest,
+    submission.customRequest || t.noNote,
+    "",
+    t.time,
+    new Intl.DateTimeFormat(language === "vi" ? "vi-VN" : "en-GB", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(new Date(submission.createdAt))
+  ].join("\n");
+
+  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Telegram free request failed with status ${response.status}`);
+  }
 }

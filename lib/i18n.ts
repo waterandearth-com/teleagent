@@ -13,6 +13,12 @@ export type Option = {
   labels: Record<Language, string>;
 };
 
+export type FreeRequestOption = {
+  id: string;
+  emoji: string;
+  labels: Record<Language, string>;
+};
+
 export type MealOption = {
   id: MealId;
   emoji: string;
@@ -73,6 +79,13 @@ export const options: Record<OptionGroup, Option[]> = {
   ]
 };
 
+export const freeRequestOptions: FreeRequestOption[] = [
+  { id: "cat-litter", emoji: "🧹", labels: { vi: "Dọn phân mèo", en: "Clean the cats' poop" } },
+  { id: "dishes", emoji: "🫧", labels: { vi: "Rửa chén", en: "Wash the dishes" } },
+  { id: "room", emoji: "✨", labels: { vi: "Dọn phòng", en: "Clean the room" } },
+  { id: "custom", emoji: "✍️", labels: { vi: "Viết yêu cầu riêng", en: "Write my own request" } }
+];
+
 export const translations = {
   vi: {
     meta: {
@@ -93,7 +106,9 @@ export const translations = {
       ],
       mealTitle: "Em muốn chọn cho lúc nào?",
       mealSubtitle: "Chọn một ô rồi mình tiếp tục nhé",
-      start: "Bắt đầu chọn 💗"
+      start: "Bắt đầu chọn 💗",
+      freeRequestTitle: "Em có yêu cầu riêng",
+      freeRequestSubtitle: "Gửi thẳng cho anh"
     },
     flow: {
       step: "Bước",
@@ -122,7 +137,12 @@ export const translations = {
       arrivalQuestion: "Bao lâu nữa em sẽ đến?",
       arrivalHint: "Kéo điểm trên vòng tròn, tối đa 60 phút",
       minutes: "phút",
-      optional: "Không bắt buộc"
+      optional: "Không bắt buộc",
+      freeRequestQuestion: "Em muốn anh làm gì?",
+      freeRequestIntro: "Chọn một hoặc nhiều yêu cầu, rồi gửi thẳng cho anh.",
+      customRequestLabel: "Em muốn nhắn yêu cầu gì?",
+      customRequestPlaceholder: "Viết yêu cầu của em ở đây",
+      sendRequest: "Gửi yêu cầu 💗"
     },
     errors: {
       chooseMeal: "Em chọn buổi sáng, trưa hoặc tối trước nha.",
@@ -130,6 +150,8 @@ export const translations = {
       customFood: "Em viết món muốn ăn vào ô này nha.",
       chooseDelivery: "Em chọn cách mình ăn tối nha.",
       chooseMood: "Em chọn cảm giác cho buổi tối nha.",
+      chooseRequest: "Em chọn ít nhất một yêu cầu nha.",
+      customRequest: "Em viết yêu cầu riêng vào ô này nha.",
       voiceRequired: "Em cần ghi âm tin nhắn thoại trước khi gửi nha.",
       microphoneFailed: "Không mở được micro. Em thử cho phép quyền micro nhé.",
       submitFailed: "Chưa gửi được. Thử lại giúp anh một lần nữa nhé."
@@ -164,6 +186,9 @@ export const translations = {
       food: "🍽️ Món ăn:",
       delivery: "🛵 Cách ăn:",
       mood: "🌙 Tâm trạng:",
+      freeRequestTitle: "💗 Yêu cầu mới",
+      requests: "📝 Yêu cầu:",
+      customRequest: "💬 Yêu cầu riêng:",
       arrival: "⏱️ Em đến trong:",
       voicePrompt: "🎙️ Câu ghi âm:",
       note: "💬 Ghi chú:",
@@ -190,7 +215,9 @@ export const translations = {
       ],
       mealTitle: "What are we choosing for?",
       mealSubtitle: "Pick a time, then choose what sounds good",
-      start: "Start choosing 💗"
+      start: "Start choosing 💗",
+      freeRequestTitle: "I have a free request",
+      freeRequestSubtitle: "Send it directly to him"
     },
     flow: {
       step: "Step",
@@ -219,7 +246,12 @@ export const translations = {
       arrivalQuestion: "How many minutes until you arrive?",
       arrivalHint: "Drag the point around the circle, up to 60 minutes",
       minutes: "min",
-      optional: "Optional"
+      optional: "Optional",
+      freeRequestQuestion: "What do you want him to do?",
+      freeRequestIntro: "Choose one or more requests, then send them directly to him.",
+      customRequestLabel: "What do you want to ask?",
+      customRequestPlaceholder: "Write your request here",
+      sendRequest: "Send request 💗"
     },
     errors: {
       chooseMeal: "Choose morning, lunch, or dinner first.",
@@ -227,6 +259,8 @@ export const translations = {
       customFood: "Type the food you want in the box.",
       chooseDelivery: "Choose how dinner should happen.",
       chooseMood: "Choose the mood for tonight.",
+      chooseRequest: "Choose at least one request.",
+      customRequest: "Write your custom request in the box.",
       voiceRequired: "Record the voice note before sending.",
       microphoneFailed: "Could not open the microphone. Please allow microphone access.",
       submitFailed: "That did not send. Please try once more."
@@ -261,6 +295,9 @@ export const translations = {
       food: "🍽️ Food:",
       delivery: "🛵 How to eat:",
       mood: "🌙 Mood:",
+      freeRequestTitle: "💗 New free request",
+      requests: "📝 Requests:",
+      customRequest: "💬 Custom request:",
       arrival: "⏱️ Arrives in:",
       voicePrompt: "🎙️ Voice prompt:",
       note: "💬 Note:",

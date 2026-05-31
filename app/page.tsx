@@ -3,6 +3,7 @@
 import { FormEvent, PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   defaultLanguage,
+  freeRequestOptions,
   languageOptions,
   meals,
   options,
@@ -14,6 +15,7 @@ import {
 } from "@/lib/i18n";
 
 type StepKey = "meal" | "food" | "delivery" | "mood" | "note" | "voice";
+type CurrentStep = StepKey | "freeRequest";
 type VoicePrompt = "english" | "hebrew" | "vietnamese";
 type FormConfig = {
   meals: MealOption[];
@@ -257,6 +259,9 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>(defaultLanguage);
   const [formConfig, setFormConfig] = useState<FormConfig>(defaultFormConfig);
   const [step, setStep] = useState(0);
+  const [isFreeRequest, setIsFreeRequest] = useState(false);
+  const [freeRequestIds, setFreeRequestIds] = useState<string[]>([]);
+  const [customRequest, setCustomRequest] = useState("");
   const [selectedMeal, setSelectedMeal] = useState("");
   const [selectedFood, setSelectedFood] = useState("");
   const [customFood, setCustomFood] = useState("");
@@ -276,7 +281,7 @@ export default function Home() {
   const streamRef = useRef<MediaStream | null>(null);
 
   const t = translations[language];
-  const currentStep = steps[step];
+  const currentStep: CurrentStep = isFreeRequest ? "freeRequest" : steps[step];
   const cuteLine = useMemo(() => t.welcome.lines[(new Date().getDate() - 1) % t.welcome.lines.length], [t]);
   const voicePromptOptions: { id: VoicePrompt; label: string }[] = [
     { id: "english", label: t.flow.voicePromptEnglish },
@@ -356,6 +361,16 @@ export default function Home() {
       return t.errors.voiceRequired;
     }
 
+    if (currentStep === "freeRequest") {
+      if (freeRequestIds.length === 0) {
+        return t.errors.chooseRequest;
+      }
+
+      if (freeRequestIds.includes("custom") && !customRequest.trim()) {
+        return t.errors.customRequest;
+      }
+    }
+
     return "";
   }
 
@@ -372,6 +387,10 @@ export default function Home() {
 
   function goBack() {
     setError("");
+    if (isFreeRequest) {
+      setIsFreeRequest(false);
+      return;
+    }
     setStep((value) => Math.max(value - 1, 0));
   }
 
@@ -388,6 +407,26 @@ export default function Home() {
     setError("");
 
     try {
+      if (isFreeRequest) {
+        const response = await fetch("/api/submit-choice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requestType: "free",
+            language,
+            freeRequestIds,
+            customRequest
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Submit failed");
+        }
+
+        setIsSuccess(true);
+        return;
+      }
+
       if (!voiceBlob) {
         throw new Error("Missing voice note");
       }
@@ -424,6 +463,9 @@ export default function Home() {
 
   function resetFlow() {
     setStep(0);
+    setIsFreeRequest(false);
+    setFreeRequestIds([]);
+    setCustomRequest("");
     setSelectedMeal("");
     setSelectedFood("");
     setCustomFood("");
@@ -513,6 +555,11 @@ export default function Home() {
     );
   }
 
+  function toggleFreeRequest(id: string) {
+    setFreeRequestIds((value) => (value.includes(id) ? value.filter((item) => item !== id) : [...value, id]));
+    setError("");
+  }
+
   return (
     <main className="app-shell">
       <FloatingHearts />
@@ -564,7 +611,64 @@ export default function Home() {
                       />
                     ))}
                   </div>
+                  <button
+                    type="button"
+                    className="free-request-card"
+                    onClick={() => {
+                      setIsFreeRequest(true);
+                      setError("");
+                    }}
+                  >
+                    <span aria-hidden="true">📝</span>
+                    <strong>{t.welcome.freeRequestTitle}</strong>
+                    <small>{t.welcome.freeRequestSubtitle}</small>
+                  </button>
                 </div>
+              </div>
+            )}
+
+            {currentStep === "freeRequest" && (
+              <div className="question-panel panel-enter">
+                <p className="step-label">{t.welcome.freeRequestTitle}</p>
+                <h1>{t.flow.freeRequestQuestion}</h1>
+                <p className="voice-intro">{t.flow.freeRequestIntro}</p>
+
+                <div className="option-grid multi-option-grid">
+                  {freeRequestOptions.map((option) => {
+                    const selected = freeRequestIds.includes(option.id);
+
+                    return (
+                      <button
+                        type="button"
+                        key={option.id}
+                        className={`option-card multi-option-card ${selected ? "selected" : ""}`}
+                        onClick={() => toggleFreeRequest(option.id)}
+                        aria-pressed={selected}
+                      >
+                        <span className="option-emoji" aria-hidden="true">
+                          {option.emoji}
+                        </span>
+                        <span>{option.labels[language]}</span>
+                        <span className="multi-check" aria-hidden="true">
+                          {selected ? "✓" : ""}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {freeRequestIds.includes("custom") && (
+                  <label className="text-field">
+                    <span>{t.flow.customRequestLabel}</span>
+                    <textarea
+                      value={customRequest}
+                      onChange={(event) => setCustomRequest(event.target.value)}
+                      placeholder={t.flow.customRequestPlaceholder}
+                      rows={4}
+                      maxLength={300}
+                    />
+                  </label>
+                )}
               </div>
             )}
 
@@ -682,7 +786,7 @@ export default function Home() {
                 <button type="button" className="ghost-button" onClick={goBack}>
                   {t.flow.back}
                 </button>
-                {currentStep === "voice" ? (
+                {currentStep === "voice" || currentStep === "freeRequest" ? (
                   <button type="submit" className="primary-button" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <span className="sending-state">
@@ -690,7 +794,7 @@ export default function Home() {
                         {t.flow.sending}
                       </span>
                     ) : (
-                      t.flow.submit
+                      currentStep === "freeRequest" ? t.flow.sendRequest : t.flow.submit
                     )}
                   </button>
                 ) : (
