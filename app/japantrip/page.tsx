@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-const dayMs = 24 * 60 * 60 * 1000;
-
-function targetForCurrentMonth(now: Date) {
-  return new Date(now.getFullYear(), now.getMonth(), 19, 0, 0, 0, 0);
-}
+const flightTarget = new Date("2026-06-19T20:50:00+07:00");
+const flightCode = "HX547";
+const flightRoute = "Da Nang (DAD) → Hong Kong (HKG)";
+const flightTime = "19 ביוני 2026, 20:50 זמן וייטנאם";
 
 function pad(value: number) {
   return String(value).padStart(2, "0");
@@ -31,6 +30,12 @@ function businessDaysUntil(target: Date, now: Date) {
   return count;
 }
 
+function calendarDaysUntil(target: Date, now: Date) {
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  const end = new Date(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0, 0);
+  return Math.max(0, Math.round((end.getTime() - start.getTime()) / 86400000));
+}
+
 function countdownParts(target: Date, now: Date) {
   const remainingMs = Math.max(0, target.getTime() - now.getTime());
   const totalSeconds = Math.floor(remainingMs / 1000);
@@ -44,15 +49,17 @@ function countdownParts(target: Date, now: Date) {
 
 export default function JapanTripPage() {
   const [now, setNow] = useState<Date | null>(null);
-  const displayNow = now ?? new Date();
-  const target = useMemo(() => targetForCurrentMonth(displayNow), [displayNow]);
+  const target = flightTarget;
   const parts = now ? countdownParts(target, now) : { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  const calendarDays = now ? Math.max(0, Math.ceil((target.getTime() - now.getTime()) / dayMs)) : 0;
+  const calendarDays = now ? calendarDaysUntil(target, now) : 0;
   const businessDays = now && now < target ? businessDaysUntil(target, now) : 0;
-  const targetLabel = target.toLocaleDateString("he-IL", {
+  const targetLabel = target.toLocaleString("he-IL", {
     day: "numeric",
     month: "long",
-    year: "numeric"
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Ho_Chi_Minh"
   });
 
   useEffect(() => {
@@ -64,9 +71,14 @@ export default function JapanTripPage() {
   return (
     <main className="japan-trip-page" dir="rtl">
       <section className="japan-trip-panel" aria-label="טיימר לנסיעה ליפן">
-        <p className="japan-trip-kicker">Japan Trip</p>
-        <h1>עוד רגע יפן</h1>
-        <p className="japan-trip-target">טיימר עד {targetLabel}</p>
+        <p className="japan-trip-kicker">Japan Trip · {flightCode}</p>
+        <h1>טיסה ליפן</h1>
+        <p className="japan-trip-target">טיימר עד המראת {flightCode}</p>
+        <div className="japan-trip-flight">
+          <strong>{flightRoute}</strong>
+          <span>{flightTime}</span>
+          <small>מוצג לפי זמן וייטנאם: {targetLabel}</small>
+        </div>
 
         <div className="japan-trip-countdown" aria-live="polite">
           <span>{parts.days}</span>
